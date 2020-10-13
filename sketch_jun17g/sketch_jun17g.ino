@@ -108,7 +108,13 @@ void loop() {
     int reading = digitalRead(5);
     //Serial.print("기울기 ");
    // Serial.println(reading);
-  
+
+    //press sensor
+    int FSR_ReadingA0 = analogRead(FSR_PinA0); // A0로부터 값 획득
+    int FSR_ReadingA1 = analogRead(FSR_PinA1);
+    int FSR_ReadingA2 = analogRead(FSR_PinA2);
+    int FSR_ReadingA3 = analogRead(FSR_PinA3);
+   
     if (!dmpReady) return;
     while (!mpuInterrupt && fifoCount < packetSize) {}
     mpuInterrupt = false;
@@ -205,33 +211,32 @@ void loop() {
 
         blinkState = !blinkState;
         digitalWrite(LED_PIN, blinkState);
+
+        Serial.println(FSR_ReadingA0);
+        Serial.print("센서 1번 : ");
+        Serial.println(FSR_ReadingA1);
+        Serial.print("센서 2번 : ");
+        Serial.println(FSR_ReadingA2);
+        Serial.print("센서 3번 : "); 
+        Serial.println(FSR_ReadingA3);
+        
+        bluetooth.print(ypr[0]);
+        bluetooth.print(",");
+        bluetooth.print(ypr[1]);
+        bluetooth.print(",");
+        bluetooth.print(ypr[2]);
+        bluetooth.print(",");
+        bluetooth.print(FSR_ReadingA0);
+        bluetooth.print(",");
+        bluetooth.print(FSR_ReadingA1);
+        bluetooth.print(",");
+        bluetooth.print(FSR_ReadingA2);
+        bluetooth.print(",");
+        bluetooth.print(FSR_ReadingA3);
+        bluetooth.print(",");
+        bluetooth.println();
     }
-    //mpu6050======================================================================================================================
-
-    //press sensor
-    int FSR_ReadingA0 = analogRead(FSR_PinA0); // A0로부터 값 획득
-    int FSR_ReadingA1 = analogRead(FSR_PinA1);
-    int FSR_ReadingA2 = analogRead(FSR_PinA2);
-    int FSR_ReadingA3 = analogRead(FSR_PinA3);
-
-    Serial.print("센서 0번 : "); // 값 출력
-    Serial.println(FSR_ReadingA0);
-    Serial.print("센서 1번 : ");
-    Serial.println(FSR_ReadingA1);
-    Serial.print("센서 2번 : ");
-    Serial.println(FSR_ReadingA2);
-    Serial.print("센서 3번 : "); 
-    Serial.println(FSR_ReadingA3);
-    Serial.println(" ");
-    //press sensor
+    //mpu6050======================================================================================================================\
     
-    bluetooth.print(ypr[0]);
-    bluetooth.print(",");
-    bluetooth.print(ypr[1]);
-    bluetooth.print(",");
-    bluetooth.print(ypr[2]);
-    bluetooth.print(",");
-    bluetooth.println();
-
     delay(100);
 }

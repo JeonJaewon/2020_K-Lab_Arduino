@@ -1,13 +1,14 @@
 #include <SoftwareSerial.h>
+#include <math.h>
 #include "I2Cdev.h"
 #include "MPU6050_6Axis_MotionApps20.h"
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
     #include "Wire.h"
 #endif
-//#define OUTPUT_READABLE_YAWPITCHROLL
+#define OUTPUT_READABLE_YAWPITCHROLL
 //#define OUTPUT_READABLE_REALACCEL
 //#define OUTPUT_READABLE_WORLDACCEL
-#define OUTPUT_READABLE_EULER
+//#define OUTPUT_READABLE_EULER
 #define INTERRUPT_PIN 2  // use pin 2 on Arduino Uno & most boards
 #define LED_PIN 13 // (Arduino is 13, Teensy is 11, Teensy++ is 6)
 
@@ -168,12 +169,18 @@ void loop() {
 //            Serial.print(aaReal.y);
 //            Serial.print("\t");
 //            Serial.println(aaReal.z);          
+            double pitch = atan(aaReal.x / sqrt(aaReal.y * aaReal.y + aaReal.z * aaReal.z)) * 180 / M_PI;
+            double roll = atan(aaReal.y / sqrt(aaReal.x * aaReal.x + aaReal.z * aaReal.z)) * 180 / M_PI;
             Serial.print("ypr\t");
             Serial.print(ypr[0] * 180/M_PI);
             Serial.print("\t");
-            Serial.print(ypr[1] * 180/M_PI);
+            Serial.print(pitch);
             Serial.print("\t");
-            Serial.println(ypr[2] * 180/M_PI);
+            Serial.print(roll);
+//            Serial.print("\t");
+//            Serial.print(ypr[1] * 180/M_PI);
+//            Serial.print("\t");
+//            Serial.println(ypr[2] * 180/M_PI);
             // 블루투스 통신으로 전송
         
         #endif
@@ -230,11 +237,11 @@ void loop() {
         Serial.print("센서 3번 : "); 
         Serial.println(FSR_ReadingA3);
         
-        bluetooth.print(ypr[0]);
+        bluetooth.print(euler[0]);
         bluetooth.print(",");
-        bluetooth.print(ypr[1]);
+        bluetooth.print(euler[1]);
         bluetooth.print(",");
-        bluetooth.print(ypr[2]);
+        bluetooth.print(euler[2]);
         bluetooth.print(",");
         bluetooth.print(FSR_ReadingA0);
         bluetooth.print(",");
